@@ -33,8 +33,8 @@ def main(argv):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('-p', '--shapePredictor', required=True, help='Path to facial landmark')
-    parser.add_argument('-i', '--image', required=True, help='Path to Input Image')
+    parser.add_argument('-p', '--shapePredictor', required=False, help='Path to facial landmark')
+    parser.add_argument('-i', '--image', required=False, help='Path to Input Image')
     args = parser.parse_args()
     main(args)
 
