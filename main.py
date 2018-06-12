@@ -15,19 +15,20 @@ folder_name = file_name[:file_name.index('.')]
 
 def main(argv):
     create_dir
-    # if not os.path.exists('input_dir'):
-    #     def download_progress(count, block_size, total_size):
-    #         sys.stdout.write('Downloading %s %.1f%% \n' %
-    #                          (file_name, float(count * block_size) / float(total_size) * 100.00))
-    #         sys.stdout.flush()
-    #     info, _ = urllib.request.urlretrieve(TRAINING_DATA, file_name, download_progress)
-    #     status = os.stat(info)
-    #     print 'Successfully downloaded ' + file_name + ' with ' + str(status.st_size / 1000000) + ' MB'
-    # print 'Extracting ' + file_name + ' ...'
-    # tarfile.open(file_name).extractall()
-    # os.rename(folder_name, 'input_dir')
-    # os.remove(file_name)
-    # print 'Successfully extracted ' + file_name + ' to input_dir and remove ' + file_name
+    if not os.path.exists('input_dir') and not os.path.isdir('input_dir'):
+        def download_progress(count, block_size, total_size):
+            sys.stdout.write('Downloading %s %.1f%% \n' %
+                             (file_name, float(count * block_size) / float(total_size) * 100.00))
+            sys.stdout.flush()
+        info, _ = urllib.request.urlretrieve(TRAINING_DATA, file_name, download_progress)
+        status = os.stat(info)
+        print 'Successfully downloaded ' + file_name + ' with ' + str(status.st_size / 1000000) + ' MB'
+    if os.path.exists(file_name):
+        print 'Extracting ' + file_name + ' ...'
+        tarfile.open(file_name).extractall()
+        os.rename(folder_name, 'input_dir')
+        os.remove(file_name)
+    print 'Successfully extracted ' + file_name + ' to input_dir and remove ' + file_name
     align_data.align_face(argv)
 
 
