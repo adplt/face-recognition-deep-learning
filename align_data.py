@@ -1,5 +1,8 @@
 from imutils.face_utils import FaceAligner
-import dlib, cv2, os, inspect
+import dlib
+import cv2
+import os
+import inspect
 
 
 def align_face_lfw(args):
@@ -13,7 +16,7 @@ def align_face_lfw(args):
 
         detector = dlib.get_frontal_face_detector()
         predictor = dlib.shape_predictor(os.path.join(curr_directory, args.shapePredictor))
-        fa = FaceAligner(predictor, desiredFaceWidth=32, desiredFaceHeight=32)
+        fa = FaceAligner(predictor, desiredFaceWidth=24, desiredFaceHeight=24)
 
         i = 0
         while i < len(list_label):
@@ -57,7 +60,7 @@ def align_face_youtube_face(args):
 
         detector = dlib.get_frontal_face_detector()
         predictor = dlib.shape_predictor(os.path.join(curr_directory, args.shapePredictor))
-        fa = FaceAligner(predictor, desiredFaceWidth=32, desiredFaceHeight=32)
+        fa = FaceAligner(predictor, desiredFaceWidth=24, desiredFaceHeight=24)
 
         i = 0
         while i < len(list_label):
@@ -89,23 +92,25 @@ def align_face_youtube_face(args):
 
                     image = cv2.imread(os.path.join(frame_index_path, input_label_dir[k]))
 
-                    # Bicubic Interpolation:
-                    # extension dari cubic interpolation, membuat permukaan gambar jadi lebih lembut
-                    # tuple dapat diisi dengan None (size'a bakal ngikutin yg default dari OpenCV)
-                    image = cv2.resize(image, None, fx=0.5, fy=0.5, interpolation=cv2.INTER_CUBIC)
+                    if image is None:
+                        print 'image failed: ' + os.path.join(frame_index_path, input_label_dir[k]);
+                    elif image is not None:
+                        # Bicubic Interpolation:
+                        # extension dari cubic interpolation, membuat permukaan gambar jadi lebih lembut
+                        # tuple dapat diisi dengan None (size'a bakal ngikutin yg default dari OpenCV)
+                        # a bicubic interpolation over 4x4 pixel neighborhood
+                        image = cv2.resize(image, None, fx=0.5, fy=0.5, interpolation=cv2.INTER_CUBIC)
 
-                    gray = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
-                    rects = detector(gray, 3)
+                        gray = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
+                        rects = detector(gray, 3)
 
-                    for rect in rects:
-                        face_aligned = fa.align(image, gray, rect)
-                    if not os.path.exists(label_path_out):
-                        os.makedirs(label_path_out)
-                        cv2.imwrite(os.path.join(label_path_out, str(input_label_dir[j])), face_aligned)
-                    else:
-                        print 'label_path_out: ' + label_path_out
-                        print 'input_label_dir[j]: ' + input_label_dir[k]
-                        cv2.imwrite(os.path.join(label_path_out, input_label_dir[k]), face_aligned)
+                        for rect in rects:
+                            face_aligned = fa.align(image, gray, rect)
+                        if not os.path.exists(label_path_out):
+                            os.makedirs(label_path_out)
+                            cv2.imwrite(os.path.join(label_path_out, str(input_label_dir[j])), face_aligned)
+                        else:
+                            cv2.imwrite(os.path.join(label_path_out, input_label_dir[k]), face_aligned)
                     k += 1
                 j += 1
             i += 1
@@ -127,7 +132,7 @@ def align_face_feret_color(args):
 
         detector = dlib.get_frontal_face_detector()
         predictor = dlib.shape_predictor(os.path.join(curr_directory, args.shapePredictor))
-        fa = FaceAligner(predictor, desiredFaceWidth=32, desiredFaceHeight=32)
+        fa = FaceAligner(predictor, desiredFaceWidth=24, desiredFaceHeight=24)
 
         i = 0
         while i < len(list_label):
