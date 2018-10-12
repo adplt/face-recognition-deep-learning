@@ -36,9 +36,9 @@ import tensorflow as tf
 # Two -> if using Sequential keras function from tensorflow
 
 my_model = tf.keras.Sequential([
-   tf.keras.layers.Conv2D(1, (1, 1)),
+   tf.keras.layers.Conv2D(32, (3, 3)),  # filter, kernel_size
    tf.keras.layers.BatchNormalization(),
-   tf.keras.layers.Conv2D(2, 1, padding='same'),
+   tf.keras.layers.Conv2D(32, (3, 3), padding='same'),
    tf.keras.layers.BatchNormalization(),
    # tf.keras.layers.Conv2D(2, (1, 1)),
    # tf.keras.layers.BatchNormalization()

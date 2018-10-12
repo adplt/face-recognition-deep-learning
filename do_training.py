@@ -1,6 +1,5 @@
 from training import my_model
 import tensorflow as tf
-# import keras
 import cv2
 import os
 import inspect
@@ -10,11 +9,11 @@ os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 
 
 curr_directory = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
-trainingImage = cv2.imread(os.path.join(curr_directory, 'out_dir/Romain_Duris/0.422.jpg'))
-targetImage = cv2.imread(os.path.join(curr_directory, 'out_dir/Romain_Duris/0.422.jpg'))
-#
-testingImage = cv2.imread(os.path.join(curr_directory, 'out_dir/Romain_Duris/0.422.jpg'))
-targetTestingImage = cv2.imread(os.path.join(curr_directory, 'out_dir/Romain_Duris/0.422.jpg'))
+trainingImage = cv2.imread(os.path.join(curr_directory, 'out_dir/Rand_Beers/2.765.jpg'))
+targetImage = cv2.imread(os.path.join(curr_directory, 'out_dir/Rand_Beers/2.766.jpg'))
+
+testingImage = cv2.imread(os.path.join(curr_directory, 'out_dir/Rand_Beers/2.765.jpg'))
+targetTestingImage = cv2.imread(os.path.join(curr_directory, 'out_dir/Rand_Beers/2.766.jpg'))
 
 # print type(image) -----> type numpy.ndarray
 
@@ -32,17 +31,21 @@ targetTestingImage = cv2.imread(os.path.join(curr_directory, 'out_dir/Romain_Dur
 
 # input
 # return Tensor dengan semua elemen'a di set 0
-# my_model()  # isi array adalah jumlah elemen per dimensi
-# (dalam hal ini menggunakan matriks 4 dimensi)
+# my_model()  # isi array'a adalah jumlah elemen per dimensi
+# (dalam hal ini harus menggunakan matriks 4 dimensi)
 
-my_model(tf.convert_to_tensor(trainingImage))
+input = tf.keras.layers.Input(shape=(None, None, 24, 24))  # shape: samples, channels, rows, cols
+
+# inputSlice = tf.slice(input, [1, 0, 0], [1, 1, 3])
+
+my_model(input)
 
 # For a multi-class classification problem = optimizer='rmsprop'
 # compile = mengkonfigurasi proses belajar
 # SGD = Stochastic Gradient Descent
 # metrics = list metrik untuk dievaluasi oleh model selama training dan testing.
 # metrics setiap output bisa di define beda2, lihat dokumentasi
-# my_model.compile(loss='categorical_crossentropy', optimizer='sgd', metrics=['accuracy'])
+my_model.compile(loss='categorical_crossentropy', optimizer='sgd', metrics=['accuracy'])
 #
 # compile bisa juga di define sebagai berikut:
 
