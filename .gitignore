@@ -109,3 +109,7 @@ out_dir/
 .DS_Store
 shape_predictor_68_face_landmarks.dat
 lfw.tgz
+
+data/
+preview/
+training images

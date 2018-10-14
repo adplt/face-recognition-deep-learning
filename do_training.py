@@ -13,7 +13,7 @@ def plots(ims, figsize=(12,6), rows=1, interp=False, titles=None):
         ims = np.array(ims).astype(np.uint8)
         if ims.shape[-1] != 3:
             ims = ims.transpose((0, 2, 3, 1))
-    f = plt.figure(figsize = figsize)
+    f = plt.figure(figsize=figsize)
     cols = len(ims)
     for i in range(len(ims)):
         sp = f.add_subplot(rows, cols, i+1)
@@ -25,19 +25,19 @@ def plots(ims, figsize=(12,6), rows=1, interp=False, titles=None):
 
 # # Just disables the warning, doesn't enable AVX/FMA (no GPU)
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
-#
-#
-# curr_directory = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
-# trainingImage = cv2.imread(os.path.join(curr_directory, 'out_dir/Rand_Beers/2.765.jpg'))
-# targetImage = cv2.imread(os.path.join(curr_directory, 'out_dir/Rand_Beers/2.766.jpg'))
-#
+
+
+curr_directory = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
+trainingImage = cv2.imread(os.path.join(curr_directory, 'out_dir/Angela_Lansbury/aligned_detect_2.3774.jpg'))
+targetImage = cv2.imread(os.path.join(curr_directory, 'out_dir/Angela_Lansbury/aligned_detect_2.3649.jpg'))
+
 # testingImage = cv2.imread(os.path.join(curr_directory, 'out_dir/Rand_Beers/2.765.jpg'))
 # targetTestingImage = cv2.imread(os.path.join(curr_directory, 'out_dir/Rand_Beers/2.766.jpg'))
 
 training = ImageDataGenerator().flow_from_directory(
     'out_dir',
     target_size=(24, 24),
-    classes=['Rand_Beers', 'Salma_Hayek', 'Paul_ONeill', 'Ray_Lewis', 'Peter_Gabriel']
+    classes=['Angela_Lansbury', 'Claudia_Pechstein', 'Alexander_Payne', 'Cathy_Freeman', 'Alison_Lohman']
 )
 
 imgs, labels = next(training)
@@ -49,7 +49,7 @@ plots(imgs, titles=labels)
 test = ImageDataGenerator().flow_from_directory(
     'out_dir',
     target_size=(24, 24),
-    classes=['Vin_Diesel', 'Rita_Wilson', 'Paul_ONeill', 'Terence_Newman', 'Natasha_Henstridge']
+    classes=['Christine_Ebersole', 'Charles_Rogers', 'Angela_Lansbury', 'Caroline_Link', 'Bill_Cartwright']
 )
 
 test_imgs, test_labels = next(test)
@@ -78,11 +78,11 @@ test_labels
 # my_model()  # isi array'a adalah jumlah elemen per dimensi
 # (dalam hal ini harus menggunakan matriks 4 dimensi)
 
-# input = tf.keras.layers.Input(shape=(None, 218, 24, 24))  # shape: samples, channels, rows, cols
-#
+input = tf.keras.layers.Input(shape=(None, 218, 24, 24))  # default shape: samples, rows, cols, channels // channels-last
+
 # inputSlice = tf.slice(input, [1, 0, 0], [1, 1, 3])
 
-# my_model(input)
+my_model(input)
 
 # For a multi-class classification problem = optimizer='rmsprop'
 # compile = mengkonfigurasi proses belajar
@@ -93,11 +93,14 @@ my_model.compile(loss='categorical_crossentropy', optimizer='sgd', metrics=['acc
 
 my_model.summary()
 
-prediction = my_model.predict_generator(test, steps=1, verbose=0)
+my_model.predict_generator(test, steps=1, verbose=0)
 
-prediction
+# print 'prediction: ' + prediction
 
-print test.class_indices
+for i in test.class_indices:
+    print 'class_indices: ' + i
+
+
 
 # compile bisa juga di define sebagai berikut:
 
@@ -121,11 +124,14 @@ print test.class_indices
 # epochs disini dimaksudkan sebagai final.
 # initial_epoch = jumlah masa untuk memulai training (berguna untuk melanjutkan training sebelum'a yang berjalan)
 
-# my_model.fit(trainingImage, targetImage, epochs=5, batch_size=32)  # default'a 32
-#
+# valid_set = [(sample, label), (sample, label), ... , (sample, label)]
+
+# my_model.fit(training, test, validation_data=valid_set, epochs=5, batch_size=32)  # default'a 32
+my_model.fit(trainingImage, targetImage, validation_split=0.1, epochs=5, batch_size=32)  # default'a 32
+
 # # targetImage bisa di set None
 # score = my_model.evaluate(testingImage, targetTestingImage, batch_size=128)
-#
+
 # print 'score: ' + str(score)
 
 
@@ -136,15 +142,15 @@ print test.class_indices
 
 
 # import keras
-#
-#
+
+
 # fashion_mnist = keras.datasets.fashion_mnist
-#
+
 # (train_images, train_labels), (test_images, test_labels) = fashion_mnist.load_data()
-#
+
 # class_names = ['T-shirt/top', 'Trouser', 'Pullover', 'Dress', 'Coat',
 #                'Sandal', 'Shirt', 'Sneaker', 'Bag', 'Ankle boot']
-#
+
 # print 'shape: ' + str(train_images.shape)
-#
+
 # print 'train_labels: ' + str(len(train_labels))
