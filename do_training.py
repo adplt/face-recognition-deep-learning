@@ -78,7 +78,8 @@ test_labels
 # my_model()  # isi array'a adalah jumlah elemen per dimensi
 # (dalam hal ini harus menggunakan matriks 4 dimensi)
 
-input = tf.keras.layers.Input(shape=(None, 218, 24, 24))  # default shape: samples, rows, cols, channels // channels-last
+input = tf.keras.layers.Input(shape=(None, 218, 24, 24))
+# default shape: samples, rows, cols, channels // channels-last
 
 # inputSlice = tf.slice(input, [1, 0, 0], [1, 1, 3])
 

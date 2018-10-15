@@ -73,6 +73,7 @@ test_datagen = ImageDataGenerator(rescale=1./255)
 # this is a generator that will read pictures found in
 # subfolers of 'data/train', and indefinitely generate
 # batches of augmented image data
+print 'data training: '
 train_generator = train_datagen.flow_from_directory(
         'data/train',  # this is the target directory
         target_size=(150, 150),  # all images will be resized to 150x150
@@ -80,6 +81,7 @@ train_generator = train_datagen.flow_from_directory(
         class_mode='binary')  # since we use binary_crossentropy loss, we need binary labels
 
 # this is a similar generator, for validation data
+print 'data validation: '
 validation_generator = test_datagen.flow_from_directory(
         'data/validation',
         target_size=(150, 150),
@@ -94,8 +96,7 @@ model.fit_generator(
         validation_steps=800 // batch_size)
 model.save_weights('first_try.h5')  # always save your weights after training or during training
 
-batch_size = 16
-
+print 'data generator training: '
 generator = datagen.flow_from_directory(
         'data/train',
         target_size=(150, 150),
@@ -108,13 +109,14 @@ bottleneck_features_train = model.predict_generator(generator, 2000)
 # save the output as a Numpy array
 np.save(open('bottleneck_features_train.npy', 'w'), bottleneck_features_train)
 
+print 'data generator validation: '
 generator = datagen.flow_from_directory(
         'data/validation',
         target_size=(150, 150),
         batch_size=batch_size,
         class_mode=None,
         shuffle=False)
-bottleneck_features_validation = model.predict_generator(generator, 800)
+bottleneck_features_validation = model.predict_generator(generator, 2000)
 np.save(open('bottleneck_features_validation.npy', 'w'), bottleneck_features_validation)
 
 train_data = np.load(open('bottleneck_features_train.npy'))
@@ -122,7 +124,7 @@ train_data = np.load(open('bottleneck_features_train.npy'))
 train_labels = np.array([0] * 1000 + [1] * 1000)
 
 validation_data = np.load(open('bottleneck_features_validation.npy'))
-validation_labels = np.array([0] * 400 + [1] * 400)
+validation_labels = np.array([0] * 1000 + [1] * 1000)
 
 model = Sequential()
 model.add(Flatten(input_shape=train_data.shape[1:]))
@@ -134,8 +136,14 @@ model.compile(optimizer='rmsprop',
               loss='binary_crossentropy',
               metrics=['accuracy'])
 
-model.fit(train_data, train_labels,
-          epochs=50,
-          batch_size=batch_size,
-          validation_data=(validation_data, validation_labels))
+print 'sampai sini: ' + str(validation_data.shape)
+
+
+model.fit(
+    train_data,
+    train_labels,
+    epochs=50,
+    batch_size=batch_size,
+    validation_data=(validation_data, validation_labels)
+)
 model.save_weights('bottleneck_fc_model.h5')
