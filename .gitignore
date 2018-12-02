@@ -104,12 +104,19 @@ venv.bak/
 .mypy_cache/
 
 .idea/
-input_dir/
-out_dir/
+thesis/input_dir/
+thesis/out_dir/
 .DS_Store
 shape_predictor_68_face_landmarks.dat
 lfw.tgz
 
-data/
-preview/
-training images
+cat_dog_example/data/
+cat_dog_example/preview/
+cat_dog_example/training images/
+
+try_dlib/afw/
+try_dlib/helen/
+try_dlib/ibug/
+try_dlib/lfpw/
+
+venv
