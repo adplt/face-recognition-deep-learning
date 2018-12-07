@@ -38,7 +38,7 @@ def slice_xml(in_path, out_path, parts):
 
             # if is one of the point i'm looking for, write in the output file
             if int(name) in point_set:
-                out.write(f"      <part name='{index}' x='{x}' y='{y}'/>\n")
+                out.write("      <part name='{index}' x='{x}' y='{y}'/>\n")
                 index += 1
     out.close()
 
@@ -68,7 +68,7 @@ def measure_model_error(model, xml_annotations):
     It measures the error of the model on the given
     xml file of annotations."""
     error = dlib.test_shape_predictor(xml_annotations, model)
-    print("Error of the model: {} is {}".format(model, error))
+    print("Error of the model: " + str(model) + " is " + str(error))
 
 
 if __name__ == '__main__':
@@ -84,4 +84,4 @@ if __name__ == '__main__':
     train_model(eyes_dat, eyes_xml)
     
     # ..and measure the model error on the testing annotations
-    measure_model_error(eyes_dat, "labels_ibug_300W_test.xml");
+    measure_model_error(eyes_dat, "labels_ibug_300W_test.xml")

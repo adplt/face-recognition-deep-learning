@@ -1,8 +1,10 @@
-import align_data
 import argparse
+import importlib
 
 
 def main(argv):
+    align_data = input('align_data.py')
+    importlib.import_module(align_data)
     align_data.align_face_feret_color(argv)
 
 
