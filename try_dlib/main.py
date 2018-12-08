@@ -26,6 +26,7 @@ def slice_xml(in_path, out_path, parts):
 
     for line in file.readlines():
         finds = re.findall(REG_PART, line)
+        print "finds: " + str(finds)
 
         # find the part section
         if len(finds) <= 0:
