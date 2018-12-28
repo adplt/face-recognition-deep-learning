@@ -6,7 +6,7 @@ EYES = [i for i in range(36, 48)]
 
 def main(argv):
     align_data = importlib.import_module('align_data')
-    align_data.align_face_feret_color(argv)
+    align_data.align_face_lfw(argv)
 
 
 if __name__ == '__main__':
