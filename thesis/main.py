@@ -17,4 +17,4 @@ if __name__ == '__main__':
     main(args)
 
 # Example:
-# python ./thesis/main.py --shapePredictor shape_predictor_68_face_landmarks.dat
+# python ./thesis/main_model.py --shapePredictor shape_predictor_68_face_landmarks.dat
