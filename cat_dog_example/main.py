@@ -1,3 +1,4 @@
+# https://blog.keras.io/building-powerful-image-classification-models-using-very-little-data.html
 from keras.preprocessing.image import ImageDataGenerator, img_to_array, load_img
 from keras.models import Sequential
 from keras.layers import Conv2D, MaxPooling2D
