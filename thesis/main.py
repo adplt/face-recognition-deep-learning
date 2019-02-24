@@ -1,11 +1,10 @@
 import argparse
-import importlib
+import align_data
 
 EYES = [i for i in range(36, 48)]
 
 
 def main(argv):
-    align_data = importlib.import_module('align_data')
     align_data.align_face_feret_color(argv)
 
 
@@ -17,4 +16,4 @@ if __name__ == '__main__':
     main(args)
 
 # Example:
-# python ./thesis/main_model.py --shapePredictor shape_predictor_68_face_landmarks.dat
+# python ./thesis/model.py --shapePredictor shape_predictor_68_face_landmarks.dat

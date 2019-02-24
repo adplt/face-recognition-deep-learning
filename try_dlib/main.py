@@ -6,7 +6,7 @@ import dlib
 REG_PART = re.compile("part name='[0-9]+'")
 
 # regex that identify all the numbers (name, x, y) inside the part section
-REG_NUM = re.compile("[0-9]+")
+REG_NUM = re.compile('[0-9]+')
 
 # define the landmark-indices we're interested to localize:
 # for example if we want detect the left and right eye landmarks
@@ -26,7 +26,7 @@ def slice_xml(in_path, out_path, parts):
 
     for line in file.readlines():
         finds = re.findall(REG_PART, line)
-        print("finds: ", str(finds))
+        print('finds: ', str(finds))
 
         # find the part section
         if len(finds) <= 0:
@@ -39,7 +39,7 @@ def slice_xml(in_path, out_path, parts):
 
             # if is one of the point i'm looking for, write in the output file
             if int(name) in point_set:
-                out.write("      <part name='{index}' x='{x}' y='{y}'/>\n")
+                out.write('      <part name=\'{index}\' x=\'{x}\' y=\'{y}\'/>\n')
                 index += 1
     out.close()
 
@@ -69,14 +69,14 @@ def measure_model_error(model, xml_annotations):
     It measures the error of the model on the given
     xml file of annotations."""
     error = dlib.test_shape_predictor(xml_annotations, model)
-    print("Error of the model: " + str(model) + " is " + str(error))
+    print('Error of the model: ' + str(model) + ' is ' + str(error))
 
 
 if __name__ == '__main__':
     # train a new model with a subset of the ibug annotations
-    ibug_xml = "labels_ibug_300W_train.xml"
-    eyes_xml = "eyes.xml"
-    eyes_dat = "eyes.dat"
+    ibug_xml = 'labels_ibug_300W_train.xml'
+    eyes_xml = 'eyes.xml'
+    eyes_dat = 'eyes.dat'
     
     # create the training xml for the new model with only the desired points
     slice_xml(ibug_xml, eyes_xml, parts=EYES)
@@ -85,4 +85,4 @@ if __name__ == '__main__':
     train_model(eyes_dat, eyes_xml)
     
     # ..and measure the model error on the testing annotations
-    measure_model_error(eyes_dat, "labels_ibug_300W_test.xml")
+    measure_model_error(eyes_dat, 'labels_ibug_300W_test.xml')

@@ -6,15 +6,15 @@ import inspect
 import re
 import bz2
 
-LEFT_EYE = re.compile("leftEye x=" + '"' + "[0-9]+")
+LEFT_EYE = re.compile('leftEye x=' + '"' + '[0-9]+')
 
-RIGHT_EYE = re.compile("rightEye x=" + '"' + "[0-9]+")
+RIGHT_EYE = re.compile('rightEye x=' + '"' + '[0-9]+')
 
-PERSON_ID = re.compile("person id=" + '"' + "[0-9]+")
+PERSON_ID = re.compile('person id=' + '"' + '[0-9]+')
 
-FRAME_ID = re.compile("frame number=" + '"' + "[0-9]+")
+FRAME_ID = re.compile('frame number=' + '"' + '[0-9]+')
 
-REG_NUM = re.compile("[0-9]+")
+REG_NUM = re.compile('[0-9]+')
 
 
 def align_face_lfw(args):
