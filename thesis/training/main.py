@@ -8,7 +8,7 @@ l_rate = 0.01
 decay = l_rate/epochs
 sgd = SGD(lr=l_rate, momentum=0.9, decay=decay, nesterov=False)
 batch_size = 16
-img_width, img_height = 1, 1
+img_width, img_height = 24, 24
 
 ############################################### Training Data #############################################################
 
