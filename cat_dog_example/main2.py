@@ -1,10 +1,9 @@
 # https://blog.keras.io/building-powerful-image-classification-models-using-very-little-data.html
 from keras.preprocessing.image import ImageDataGenerator, img_to_array, load_img
 from keras.models import Sequential
-from keras.layers import Conv2D, MaxPooling2D, Activation, Dropout, Flatten, Dense, Input
+from keras.layers import Conv2D, MaxPooling2D, Activation, Dropout, Flatten, Dense
 import numpy as np
 import os
-from keras.models import Model
 
 # # Just disables the warning, doesn't enable AVX/FMA (no GPU)
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
@@ -19,9 +18,9 @@ datagen = ImageDataGenerator(
         horizontal_flip=True,
         fill_mode='nearest')
 
-# img = load_img('data/train/cats/cat.0.jpg')  # this is a PIL image
-# x = img_to_array(img)  # this is a Numpy array with shape (3, 150, 150)
-# x = x.reshape((1,) + x.shape)  # this is a Numpy array with shape (1, 3, 150, 150)
+img = load_img('data/train/cats/cat.0.jpg')  # this is a PIL image
+x = img_to_array(img)  # this is a Numpy array with shape (3, 150, 150)
+x = x.reshape((1,) + x.shape)  # this is a Numpy array with shape (1, 3, 150, 150)
 
 # the .flow() command below generates batches of randomly transformed images
 # and saves the results to the `preview/` directory
@@ -32,33 +31,28 @@ datagen = ImageDataGenerator(
 #     if i > 20:
 #         break  # otherwise the generator would loop indefinitely
 
-input = Input(shape=(150, 150, 3))
+model = Sequential()
 
-conv_1 = Conv2D(32, (3, 3), data_format='channels_first')(input)
-activation_1 = Activation('relu')(conv_1)
-max_pooling_1 = MaxPooling2D(pool_size=(2, 2), dim_ordering='tf')(activation_1)
+model.add(Conv2D(32, (3, 3), input_shape=(150, 150, 3), data_format='channels_first'))
+model.add(Activation('relu'))
+model.add(MaxPooling2D(pool_size=(2, 2), dim_ordering='tf'))
 
-conv_2 = Conv2D(32, (3, 3))(max_pooling_1)
-activation_2 = Activation('relu')(conv_2)
-max_pooling_2 = MaxPooling2D(pool_size=(2, 2), dim_ordering='tf')(activation_2)
+model.add(Conv2D(32, (3, 3)))
+model.add(Activation('relu'))
+model.add(MaxPooling2D(pool_size=(2, 2), dim_ordering='tf'))
 
-conv_3 = Conv2D(64, (3, 3))(max_pooling_2)
-activation_3 = Activation('relu')(conv_3)
-max_pooling_3 = MaxPooling2D(pool_size=(2, 2), dim_ordering='tf')(activation_3)
+model.add(Conv2D(64, (3, 3)))
+model.add(Activation('relu'))
+model.add(MaxPooling2D(pool_size=(2, 2), dim_ordering='tf'))
 
 # the model so far outputs 3D feature maps (height, width, features)
 
-flatten_4 = Flatten()(max_pooling_3)  # this converts our 3D feature maps to 1D feature vectors
-dense_4 = Dense(64)(flatten_4)
-activation_4 = Activation('relu')(dense_4)
-dropout_4 = Dropout(0.5)(activation_4)
-
-dense_5 = Dense(1)(dropout_4)
-activation_5 = Activation('sigmoid')(dense_5)
-
-model = Model(input, activation_5)
-
-model.summary()
+model.add(Flatten())  # this converts our 3D feature maps to 1D feature vectors
+model.add(Dense(64))
+model.add(Activation('relu'))
+model.add(Dropout(0.5))
+model.add(Dense(1))
+model.add(Activation('sigmoid'))
 
 model.compile(loss='binary_crossentropy',
               optimizer='rmsprop',

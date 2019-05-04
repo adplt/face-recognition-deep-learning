@@ -8,12 +8,12 @@ l_rate = 0.01
 decay = l_rate/epochs
 sgd = SGD(lr=l_rate, momentum=0.9, decay=decay, nesterov=False)
 batch_size = 16
-img_width, img_height = 3600, 3600
+img_width, img_height = 1, 1
 
 ############################################### Training Data #############################################################
 
 generator = ImageDataGenerator(
-    rescale=1. / 255,
+    rescale=1./255,
     rotation_range=40,
     width_shift_range=0.2,
     height_shift_range=0.2,
@@ -31,20 +31,20 @@ test_generator = generator.flow_from_directory(
 
 train_generator = generator.flow_from_directory(
     '../out_dir_4',
-    target_size=(24, 24),
+    target_size=(img_width, img_height),
     batch_size=batch_size,
     class_mode='binary')
 
 validation_generator = generator.flow_from_directory(
     '../out_dir_4',
-    target_size=(24, 24),
+    target_size=(img_width, img_height),
     batch_size=batch_size,
     class_mode='binary')
 
 model = model.get_model()
 model.summary()
 
-model.compile(loss='categorical_crossentropy', optimizer=sgd, metrics=['accuracy'])
+model.compile(loss='binary_crossentropy', optimizer=sgd, metrics=['accuracy'])
 model.fit_generator(
     generator=train_generator,
     steps_per_epoch=2000 // batch_size,
