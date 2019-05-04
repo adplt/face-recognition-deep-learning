@@ -5,16 +5,17 @@ import os
 import inspect
 import re
 import bz2
+import shutil
 
-LEFT_EYE = re.compile("leftEye x=" + '"' + "[0-9]+")
+LEFT_EYE = re.compile('leftEye x=' + '"' + '[0-9]+')
 
-RIGHT_EYE = re.compile("rightEye x=" + '"' + "[0-9]+")
+RIGHT_EYE = re.compile('rightEye x=' + '"' + '[0-9]+')
 
-PERSON_ID = re.compile("person id=" + '"' + "[0-9]+")
+PERSON_ID = re.compile('person id=' + '"' + '[0-9]+')
 
-FRAME_ID = re.compile("frame number=" + '"' + "[0-9]+")
+FRAME_ID = re.compile('frame number=' + '"' + '[0-9]+')
 
-REG_NUM = re.compile("[0-9]+")
+REG_NUM = re.compile('[0-9]+')
 
 
 def align_face_lfw(args):
@@ -67,10 +68,6 @@ def align_face_lfw(args):
             j += 1
         i += 1
     print('Successfully face aligned and copy new dataset to to output_dir')
-    # elif args.shapePredictor is None:
-    #     print('You don\'t have shapePredictor so you cannot continuing to alignment face')
-    # else:
-    #     print('Finished, nothing to do')
 
 
 def align_face_youtube_face(args):
@@ -105,10 +102,10 @@ def align_face_youtube_face(args):
                             # tuple dapat diisi dengan None (size'a bakal ngikutin yg default dari OpenCV)
                             # a bicubic interpolation over 4x4 pixel neighborhood
                             image = cv2.resize(image, None, fx=0.5, fy=0.5, interpolation=cv2.INTER_CUBIC)
-    
+
                             gray = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
                             rects = detector(gray, 3)
-    
+
                             for rect in rects:
                                 face_aligned = fa.align(image, gray, rect)
                                 if not os.path.exists(label_path_out):
@@ -118,10 +115,6 @@ def align_face_youtube_face(args):
             j += 1;
         i += 1;
     print('Successfully face aligned and copy new dataset to to output_dir')
-    # elif args.shapePredictor is None:
-    #     print('You don\'t have shapePredictor so you cannot continuing to alignment face')
-    # else:
-    #     print('Finished, nothing to do')
 
 
 def align_face_choke_point(args):
@@ -190,11 +183,7 @@ def align_face_choke_point(args):
                             # cv2.waitKey(30)
         i += 1
     print('Successfully face aligned and copy new dataset to to output_dir')
-    # elif args.shapePredictor is None:
-    #     print('You don\'t have shapePredictor so you cannot continuing to alignment face')
-    # else:
-    #     print('Finished, nothing to do')
-    
+
 
 def align_face_feret_color(args):
     curr_directory = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
@@ -213,13 +202,22 @@ def align_face_feret_color(args):
         input_label_dir = os.listdir(os.path.join(input_dir, label))
         output_label_dir = os.path.join(out_dir, label)
         while j < len(input_label_dir):
-            with open(os.path.join(input_dir, label + '/' + input_label_dir[j]), 'wb') as new_file,\
-                    bz2.BZ2File(os.path.join(input_dir, label + '/' + input_label_dir[j]), 'rb') as read_file:
-                for data in iter(lambda: read_file.read(100 * 1024), b''):
-                    new_file.write(data)
-            image_path = str(input_label_dir[j])[:-4]
-            print('image_path: ', image_path)
-            image = cv2.imread(os.path.join(input_dir, label + '/' + image_path))
+            
+            old_name = os.path.join(input_dir, label + '/' + input_label_dir[j])
+            new_name = os.path.join(input_dir, label + '/' + input_label_dir[j][0:len(input_label_dir[j])-4])
+
+            print old_name
+            
+            dec = bz2.BZ2Decompressor()
+            with open(old_name, "rb") as fobj:
+                data = fobj.read()
+
+            data = dec.decompress(data)
+            
+            print data
+            
+            image = cv2.imread(new_name)
+            
             # Bicubic Interpolation: extension dari cubic interpolation, membuat permukaan gambar jadi lebih lembut
             # tuple dapat diisi dengan None (size'a bakal ngikutin yg default dari OpenCV)
             # a bicubic interpolation over 4x4 pixel neighborhood
@@ -234,8 +232,3 @@ def align_face_feret_color(args):
             j += 1
         i += 1
     print('Successfully face aligned and copy new dataset to to output_dir')
-    # elif args.shapePredictor is None:
-    #     print('You don\'t have shapePredictor so you cannot continuing to alignment face')
-    # else:
-    #     print('Finished, nothing to do')
-

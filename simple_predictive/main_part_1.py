@@ -1,5 +1,5 @@
 # implemented from
-# shttps://medium.com/datadriveninvestor/a-simple-guide-to-creating-predictive-models-in-python-part-1-8e3ddc3d7008
+# https://medium.com/datadriveninvestor/a-simple-guide-to-creating-predictive-models-in-python-part-1-8e3ddc3d7008
 
 from __future__ import division
 import pandas as pd
