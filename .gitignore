@@ -105,7 +105,11 @@ venv.bak/
 
 .idea/
 thesis/input_dir/
-thesis/out_dir/
+thesis/out_dir_1/
+thesis/out_dir_2/
+thesis/out_dir_3/
+thesis/out_dir_4/
+bz2_zip/00001/
 .DS_Store
 shape_predictor_68_face_landmarks.dat
 lfw.tgz

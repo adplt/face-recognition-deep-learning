@@ -1,139 +1,132 @@
-from keras.layers import Conv2D, MaxPooling2D, Concatenate, Dropout, Activation, Flatten, Input
-from keras.models import Sequential, Model
+from keras.layers import Conv2D, MaxPooling2D, Concatenate, Dropout, Flatten, Input
 import os
-from keras.applications.inception_v3 import InceptionV3
-import keras
-from keras.layers.core import Lambda
+from keras.models import Model
+import inception
+import numpy as np
+from keras import backend as K
+from keras.preprocessing.image import ImageDataGenerator
 
 # # Just disables the warning, doesn't enable AVX/FMA (no GPU)
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 
 
-def build_model():
-    conv1 = Sequential()
-    
-    conv1.add(Conv2D(2, (7, 7), data_format='channels_first', input_shape=(96, 96, 64)))
-    conv1.add(Activation('relu'))
-    conv1.add(MaxPooling2D(data_format='channels_first', input_shape=(48, 48, 64), pool_size=(2, 2)))
-    
-    conv2 = Sequential()
-    
-    conv2.add(Conv2D(1, (3, 3), input_shape=(48, 48, 192), data_format='channels_first'))  # input_shape=(48, 48, 192)
-    conv2.add(Activation('relu'))
-    conv2.add(MaxPooling2D(data_format='channels_first', input_shape=(24, 24, 192), pool_size=(2, 2)))
-    
-    inception3 = Sequential()
-    
-    input_img = Input(shape=(24, 24, 256))
-    
-    tower_0 = Conv2D(64, (1, 1), padding='same', data_format='channels_first')(input_img)
+def get_model():
+    input_img = Input(shape=(1, 1, 3))
+    conv1_convolution = Conv2D(1, (7, 7), strides=2, data_format='channels_last', activation='relu', padding='same')(input_img)
+    conv1 = MaxPooling2D(data_format='channels_last', padding='same', strides=2, pool_size=(2, 2))(conv1_convolution)
 
-    tower_1 = Conv2D(64, (1, 1), padding='same', data_format='channels_first')(input_img)
-    tower_1 = Conv2D(64, (3, 3), padding='same', data_format='channels_first')(tower_1)
-
-    tower_2 = Conv2D(64, (1, 1), padding='same', data_format='channels_first')(input_img)
-    tower_2 = Conv2D(64, (5, 5), padding='same', data_format='channels_first')(tower_2)
-
-    tower_3 = MaxPooling2D(data_format='channels_first', padding='same', strides=(1, 1), pool_size=(2, 2))(input_img)
-    tower_3 = Conv2D(64, (1, 1), padding='same', data_format='channels_first')(tower_3)
-
-    inception3_merge = Concatenate(axis=3)([tower_0, tower_1, tower_2, tower_3])
-    inception3.add(Model(inputs=input_img, outputs=inception3_merge))
-    inception3.add(Activation('relu'))
-    # inception3.add(InceptionV3(weights=None, include_top=False, pooling='max'))  # input_shape=(24, 24, 480)
-    # inception3.add(Activation('relu'))
-    inception3.add(MaxPooling2D(data_format='channels_first', input_shape=(12, 12, 480), pool_size=(2, 2)))
+    # conv2_convolution = Conv2D(1, (3, 3), strides=2, data_format='channels_last', activation='relu', padding='same')(conv1)
+    # conv2 = MaxPooling2D(data_format='channels_last', padding='same', strides=2, pool_size=(2, 2))(conv2_convolution)
     
-    inception4 = Sequential()
-    input_img = Input(shape=(12, 12, 3))
+    # inception3a_activation = inception.with_dimension_reduction(conv2, 1, False)
+    # inception3 = inception.with_dimension_reduction(inception3a_activation, 1, True)
 
-    tower_0 = Conv2D(64, (1, 1), padding='same', data_format='channels_first')(input_img)
+    # # inception3a_activation = inception.with_dimension_reduction(conv2, 64, False)
+    # # inception3 = inception.with_dimension_reduction(inception3a_activation, 120, True)
+    #
+    # ######################################################### Trunk ############################################################
+    #
+    # inception4a_activation = inception.with_dimension_reduction(inception3, 1, False)
+    # inception4e_activation = inception.with_dimension_reduction(inception4a_activation, 1, False)
+    # inception4 = inception.with_dimension_reduction(inception4e_activation, 1, True)
+    # inception5a_activation = inception.with_dimension_reduction(inception4, 1, False)
+    # inception5b_1 = inception.with_dimension_reduction(inception5a_activation, 1, True)
+    #
+    # ######################################################### Branch 1 ##########################################################
+    #
+    # inception4b_activation = inception.with_dimension_reduction(inception3, 1, False)
+    # inception4e_activation = inception.with_dimension_reduction(inception4b_activation, 1, False)
+    # inception4 = inception.with_dimension_reduction(inception4e_activation, 1, True)
+    # inception5a_activation = inception.with_dimension_reduction(inception4, 1, False)
+    # inception5b_2 = inception.with_dimension_reduction(inception5a_activation, 1, True)
+    #
+    # ######################################################### Branch 2 ##########################################################
+    #
+    # inception4c_activation = inception.with_dimension_reduction(inception3, 1, False)
+    # inception4e_activation = inception.with_dimension_reduction(inception4c_activation, 1, False)
+    # inception4 = inception.with_dimension_reduction(inception4e_activation, 1, True)
+    # inception5a_activation = inception.with_dimension_reduction(inception4, 1, False)
+    # inception5b_3 = inception.with_dimension_reduction(inception5a_activation, 1, True)
+    #
+    # ################################################ Branch 3 --- addition #######################################################
+    #
+    # inception4d_activation = inception.with_dimension_reduction(inception3, 1, False)
+    # inception4e_activation = inception.with_dimension_reduction(inception4d_activation, 1, False)
+    # inception4 = inception.with_dimension_reduction(inception4e_activation, 1, True)
+    # inception5a_activation = inception.with_dimension_reduction(inception4, 1, False)
+    # inception5b_4 = inception.with_dimension_reduction(inception5a_activation, 1, True)
+    #
+    # # inception4d_activation = inception.with_dimension_reduction(inception3, 128, False)
+    # # inception4e_activation = inception.with_dimension_reduction(inception4d_activation, 132, False)
+    # # inception4 = inception.with_dimension_reduction(inception4e_activation, 208, True)
+    # # inception5a_activation = inception.with_dimension_reduction(inception4, 208, False)
+    # # inception5b_4 = inception.with_dimension_reduction(inception5a_activation, 256, True)
+    #
+    # merged = Concatenate(axis=1)([
+    #     inception5b_1,
+    #     inception5b_2,
+    #     inception5b_3,
+    #     inception5b_4,
+    # ])
+    #
+    # dropout = Dropout(0.4)(merged)
+    flatten = Flatten()(conv1)
+    
+    return Model(input_img, flatten)
 
-    tower_1 = Conv2D(64, (1, 1), padding='same', data_format='channels_first')(input_img)
-    tower_1 = Conv2D(64, (3, 3), padding='same', data_format='channels_first')(tower_1)
 
-    tower_2 = Conv2D(64, (1, 1), padding='same', data_format='channels_first')(input_img)
-    tower_2 = Conv2D(64, (5, 5), padding='same', data_format='channels_first')(tower_2)
+# model = get_model()
+#
+# model.summary()
+#
+# model.compile(loss='binary_crossentropy',
+#     optimizer='rmsprop',
+#     metrics=['accuracy'])
+#
+# # # show output array
+# # inp = model.input  # input placeholder
+# # outputs = [layer.output for layer in model.layers][1:]  # all layer outputs except first (input) layer
+# # functor = K.function([inp, K.learning_phase()], outputs)  # evaluation function
+# #
+# # # Testing
+# # test = np.random.random((24, 24, 3))[np.newaxis, ...]
+# # layer_outs = functor([test, 1.])
+# # print layer_outs
+#
+# batch_size = 16
+#
+# generator = ImageDataGenerator(
+#     rescale=1./255,
+#     rotation_range=40,
+#     width_shift_range=0.2,
+#     height_shift_range=0.2,
+#     shear_range=0.2,
+#     zoom_range=0.2,
+#     horizontal_flip=True,
+#     fill_mode='nearest')
+#
+# train_datagen = ImageDataGenerator(
+#     rescale=1./255,
+#     shear_range=0.2,
+#     zoom_range=0.2,
+#     horizontal_flip=True)
+#
+# train_generator = train_datagen.flow_from_directory(
+#     '../out_dir_4',  # this is the target directory
+#     target_size=(1, 1),  # all images will be resized to 150x150
+#     batch_size=batch_size,
+#     class_mode='binary')  # since we use binary_crossentropy loss, we need binary labels
+#
+# validation_generator = generator.flow_from_directory(
+#     '../out_dir_4',
+#     target_size=(1, 1),
+#     batch_size=batch_size,
+#     class_mode='binary')
+#
+# model.fit_generator(
+#     train_generator,
+#     steps_per_epoch=2000 // batch_size,
+#     epochs=50,
+#     validation_data=validation_generator,
+#     validation_steps=800 // batch_size)
 
-    tower_3 = MaxPooling2D(data_format='channels_first', padding='same', strides=(1, 1), pool_size=(2, 2))(input_img)
-    tower_3 = Conv2D(64, (1, 1), padding='same', data_format='channels_first')(tower_3)
-
-    inception4_merge = Concatenate(axis=3)([tower_0, tower_1, tower_2, tower_3])
-    inception4.add(Model(inputs=input_img, outputs=inception4_merge))
-    inception4.add(Activation('relu'))
-    # inception4.add(InceptionV3(weights=None, include_top=False, pooling='max'))  # input_shape=(12, 12, 512)
-    # inception4.add(Activation('relu'))
-    # inception4.add(InceptionV3(weights=None, include_top=False, pooling='max'))  # input_shape=(12, 12, 512)
-    # inception4.add(Activation('relu'))
-    # inception4.add(InceptionV3(weights=None, include_top=False, pooling='max'))  # input_shape=(12, 12, 528)
-    # inception4.add(Activation('relu'))
-    # inception4.add(InceptionV3(weights=None, include_top=False, pooling='max'))  # input_shape=(12, 12, 832)
-    # inception4.add(Activation('relu'))
-    inception4.add(MaxPooling2D(data_format='channels_first', pool_size=(2, 2)))  # input_shape=(6, 6, 832)
-    
-    inception5 = Sequential()
-    # inception5.add(InceptionV3(weights=None, include_top=False, pooling='max'))  # input_shape=(6, 6, 3)
-    input_img = Input(shape=(6, 6, 3))
-
-    tower_0 = Conv2D(64, (1, 1), padding='same', data_format='channels_first')(input_img)
-
-    tower_1 = Conv2D(64, (1, 1), padding='same', data_format='channels_first')(input_img)
-    tower_1 = Conv2D(64, (3, 3), padding='same', data_format='channels_first')(tower_1)
-
-    tower_2 = Conv2D(64, (1, 1), padding='same', data_format='channels_first')(input_img)
-    tower_2 = Conv2D(64, (5, 5), padding='same', data_format='channels_first')(tower_2)
-
-    tower_3 = MaxPooling2D(data_format='channels_first', padding='same', strides=(1, 1), pool_size=(2, 2))(input_img)
-    tower_3 = Conv2D(64, (1, 1), padding='same', data_format='channels_first')(tower_3)
-
-    inception5_merge = Concatenate(axis=3)([tower_0, tower_1, tower_2, tower_3])
-    inception5.add(Model(inputs=input_img, outputs=inception5_merge))
-    inception5.add(Activation('relu'))
-    # inception5.add(InceptionV3(weights=None, include_top=False, pooling='max'))  # input_shape=(6, 6, 1024)
-    # inception5.add(Activation('relu'))
-    inception5.add(MaxPooling2D(data_format='channels_first', pool_size=(2, 2)))  # input_shape=(3, 3, 1024)
-    
-    # Concatenate only able to concat Model, not Sequential
-    # Will refactor above soon (using Model instead of Sequential)
-    
-    trunk = Concatenate(axis=1)([
-        conv1,
-        conv2,
-        inception3,
-        inception4
-    ])
-    
-    concat_branch1 = Concatenate(axis=1)([
-        conv2,
-        inception3,
-    ])
-    
-    concat_branch2 = Concatenate(axis=1)([
-        conv2,
-        inception3,
-    ])
-    
-    branch1 = Concatenate(axis=1)([
-        concat_branch1,
-        inception4,
-    ])
-    
-    branch2 = Concatenate(axis=1)([
-        concat_branch2,
-        inception4,
-    ])
-    
-    merged = Concatenate(axis=1)([
-        trunk,
-        branch1,
-        branch2
-    ])
-    
-    merged.add(Dropout(0.4))
-    merged.add(Flatten())
-
-    merged.summary()
-    
-    print('finished')
-    
-    return merged
