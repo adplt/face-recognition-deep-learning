@@ -10,9 +10,13 @@ This project is a Face Recognition using Deep Learning for low resolution video 
 
 - For connecting to common subspace between high resolution (collected from Super resolution) and low resolution (original image).
 
-#### VGG16 model
+#### Convolutional Neural Network
 
 - CNN deep learning object recognition and feature extractions.
+
+#### Inception model
+
+- GoogLeNet pre-trained model that have reduction dimensionality.
 
 #### Softmax layer
 
