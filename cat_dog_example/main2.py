@@ -54,9 +54,7 @@ model.add(Dropout(0.5))
 model.add(Dense(1))
 model.add(Activation('sigmoid'))
 
-model.compile(loss='binary_crossentropy',
-              optimizer='rmsprop',
-              metrics=['accuracy'])
+model.compile(loss='binary_crossentropy', optimizer='rmsprop', metrics=['accuracy'])
 
 batch_size = 16
 
@@ -128,15 +126,12 @@ validation_data = np.load(open('bottleneck_features_validation.npy'))
 validation_labels = np.array([0] * 1000 + [1] * 1000)
 
 model = Sequential()
-model.add(Flatten(input_shape=train_data.shape[
-                              1:]))
+model.add(Flatten(input_shape=train_data.shape[1:]))
 model.add(Dense(256, activation='relu'))
 model.add(Dropout(0.5))
 model.add(Dense(1, activation='sigmoid'))
 
-model.compile(optimizer='rmsprop',
-              loss='binary_crossentropy',
-              metrics=['accuracy'])
+model.compile(optimizer='rmsprop', loss='binary_crossentropy', metrics=['accuracy'])
 
 print 'sampai sini: ' + str(validation_data.shape)
 

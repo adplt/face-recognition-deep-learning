@@ -115,11 +115,15 @@ shape_predictor_68_face_landmarks.dat
 lfw.tgz
 
 thesis/training/first_try.h5
+thesis/training/bottleneck_features_train.npy
 thesis/training/bottleneck_features_validation.npy
+thesis/training/bottleneck_features_testing.npy
 
 cat_dog_example/first_try.h5
+cat_dog_example/bottleneck_features_train.npy
 cat_dog_example/bottleneck_features_training.npy
 cat_dog_example/bottleneck_features_validation.npy
+cat_dog_example/bottleneck_features_train.npy
 
 cat_dog_example/data/
 cat_dog_example/preview/
@@ -129,5 +133,7 @@ try_dlib/afw/
 try_dlib/helen/
 try_dlib/ibug/
 try_dlib/lfpw/
+
+transfer_learning/dataset/
 
 venv

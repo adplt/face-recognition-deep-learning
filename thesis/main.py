@@ -1,11 +1,12 @@
 import argparse
-import align_data
+from align_data import PreProcessing
 
 EYES = [i for i in range(36, 48)]
 
 
 def main(argv):
-    align_data.align_face_lfw(argv)
+    align_data = PreProcessing(argv)
+    align_data.align_face_youtube_face()
 
 
 if __name__ == '__main__':
