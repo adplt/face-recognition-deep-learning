@@ -6,10 +6,6 @@ This project is a Face Recognition using Deep Learning for low resolution video 
 
 - For enhancing low resolution image to high resolution.
 
-#### Couple Mapping
-
-- For connecting to common subspace between high resolution (collected from Super resolution) and low resolution (original image).
-
 #### Convolutional Neural Network
 
 - CNN deep learning object recognition and feature extractions.
