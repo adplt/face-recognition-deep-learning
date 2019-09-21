@@ -22,4 +22,4 @@ This project is a Face Recognition using Deep Learning for low resolution video 
 
 - For merging multidimension classifications on fully connected layer into one dimension classification.
 
-## Papper for this project will be publish soon.
+## Paper for this project will be publish soon.
